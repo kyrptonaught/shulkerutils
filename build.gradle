@@ -1,6 +1,7 @@
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'fabric-loom' version '0.6-SNAPSHOT'
 	id 'maven-publish'
+	id "com.jfrog.bintray" version "1.8.4"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -21,6 +22,23 @@ dependencies {
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
+bintray {
+	user = System.getenv('BINTRAY_USER')
+	key = System.getenv('BINTRAY_KEY')
+	publications = ['bintrayPublication']
+	pkg {
+		repo = 'Quickshulker'
+		name = 'ShulkerUtils'
+		userOrg = 'kyrptonaught'
+		licenses = ['MIT']
+		vcsUrl = 'https://github.com/kyrptonaught/shulkerutils'
+		version {
+			name = project.version
+			released  = new Date()
+			vcsTag = project.version
+		}
+	}
+}
 processResources {
 	inputs.property "version", project.version
 
@@ -56,9 +74,12 @@ jar {
 // configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
+		bintrayPublication(MavenPublication) {
+			groupId 'net.kyrptonaught'
+			artifactId 'shulkerutils'
+			version project.version
+
+			artifact(remapJar) {
 				builtBy remapJar
 			}
 			artifact(sourcesJar) {
@@ -67,9 +88,7 @@ publishing {
 		}
 	}
 
-	// select the repositories you want to publish to
 	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
+		mavenLocal()
 	}
 }

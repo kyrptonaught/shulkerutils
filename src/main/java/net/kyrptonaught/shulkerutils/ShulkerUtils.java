@@ -22,9 +22,10 @@ public class ShulkerUtils {
         return false;
     }
 
-    public static void insertIntoShulker(SimpleInventory shulkerInv, ItemStack stack, PlayerEntity player) {
-        shulkerInv.addStack(stack);
+    public static ItemStack insertIntoShulker(SimpleInventory shulkerInv, ItemStack stack, PlayerEntity player) {
+        ItemStack output = shulkerInv.addStack(stack);
         shulkerInv.onClose(player);
+        return output;
     }
 
     public static ItemStackInventory getInventoryFromShulker(ItemStack stack) {

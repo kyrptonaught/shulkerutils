@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
   "id": "shulkerutils",
-  "version": "1.0.0-1.16",
+  "version": "1.0.1-1.16",
   "name": "shulkerutils",
   "description": "Library for working with shulkers",
   "authors": [
     "kyrptonaught"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/ridable-ender-pearls",
-    "sources": "https://github.com/kyrptonaught/ridablepearls"
+    "homepage": "https://github.com/kyrptonaught/shulkerutils",
+    "sources": "https://github.com/kyrptonaught/shulkerutils"
   },
   "license": "MIT",
   "environment": "*",
