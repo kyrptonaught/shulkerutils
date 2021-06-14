@@ -7,7 +7,7 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 
 
@@ -22,10 +22,10 @@ public class ItemStackInventory extends SimpleInventory {
     }
 
     public static DefaultedList<ItemStack> getStacks(ItemStack usedStack, int SIZE) {
-        CompoundTag compoundTag = usedStack.getSubTag("BlockEntityTag");
+        NbtCompound compoundTag = usedStack.getSubTag("BlockEntityTag");
         DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(SIZE, ItemStack.EMPTY);
         if (compoundTag != null && compoundTag.contains("Items", 9)) {
-            Inventories.fromTag(compoundTag, itemStacks);
+            Inventories.readNbt(compoundTag, itemStacks);
         }
         return itemStacks;
     }
@@ -33,7 +33,7 @@ public class ItemStackInventory extends SimpleInventory {
     @Override
     public void markDirty() {
         super.markDirty();
-        CompoundTag compoundTag = itemStack.getSubTag("BlockEntityTag");
+        NbtCompound compoundTag = itemStack.getSubTag("BlockEntityTag");
         if (isEmpty()) {
             itemStack.removeSubTag("BlockEntityTag");
             return;
@@ -45,7 +45,7 @@ public class ItemStackInventory extends SimpleInventory {
         for (int i = 0; i < size(); i++) {
             itemStacks.set(i, getStack(i));
         }
-        Inventories.toTag(compoundTag, itemStacks);
+        Inventories.writeNbt(compoundTag, itemStacks);
     }
 
     @Override

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "shulkerutils",
-  "version": "1.0.1-1.16",
+  "version": "1.0.1-1.17",
   "name": "shulkerutils",
   "description": "Library for working with shulkers",
   "authors": [
@@ -22,7 +22,9 @@
   "entrypoints": {
   },
   "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*"
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
   }
 }
