@@ -23,6 +23,8 @@ public class ShulkerUtils {
     }
 
     public static ItemStack insertIntoShulker(SimpleInventory shulkerInv, ItemStack stack, PlayerEntity player) {
+        if (isShulkerItem(stack) || !shulkerInv.canInsert(stack))
+            return stack;
         ItemStack output = shulkerInv.addStack(stack);
         shulkerInv.onClose(player);
         return output;

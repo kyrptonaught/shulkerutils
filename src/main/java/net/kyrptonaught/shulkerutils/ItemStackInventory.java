@@ -1,19 +1,17 @@
 package net.kyrptonaught.shulkerutils;
 
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 
 
 public class ItemStackInventory extends SimpleInventory {
-    private final ItemStack itemStack;
-    private final int SIZE;
+    protected final ItemStack itemStack;
+    protected final int SIZE;
 
     public ItemStackInventory(ItemStack stack, int SIZE) {
         super(getStacks(stack, SIZE).toArray(new ItemStack[SIZE]));
@@ -22,7 +20,7 @@ public class ItemStackInventory extends SimpleInventory {
     }
 
     public static DefaultedList<ItemStack> getStacks(ItemStack usedStack, int SIZE) {
-        NbtCompound compoundTag = usedStack.getSubTag("BlockEntityTag");
+        NbtCompound compoundTag = usedStack.getSubNbt("BlockEntityTag");
         DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(SIZE, ItemStack.EMPTY);
         if (compoundTag != null && compoundTag.contains("Items", 9)) {
             Inventories.readNbt(compoundTag, itemStacks);
@@ -33,19 +31,29 @@ public class ItemStackInventory extends SimpleInventory {
     @Override
     public void markDirty() {
         super.markDirty();
-        NbtCompound compoundTag = itemStack.getSubTag("BlockEntityTag");
+        NbtCompound blockEntityTag = itemStack.getSubNbt("BlockEntityTag");
+        if (blockEntityTag == null)
+            blockEntityTag = itemStack.getOrCreateSubNbt("BlockEntityTag");
+
         if (isEmpty()) {
-            itemStack.removeSubTag("BlockEntityTag");
-            return;
-        } else if (compoundTag == null) {
-            compoundTag = itemStack.getOrCreateSubTag("BlockEntityTag");
+            if (blockEntityTag.contains("Items")) blockEntityTag.remove("Items");
+        } else {
+            DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(SIZE, ItemStack.EMPTY);
+            for (int i = 0; i < size(); i++) {
+                itemStacks.set(i, getStack(i));
+            }
+            Inventories.writeNbt(blockEntityTag, itemStacks);
         }
 
-        DefaultedList<ItemStack> itemStacks = DefaultedList.ofSize(SIZE, ItemStack.EMPTY);
-        for (int i = 0; i < size(); i++) {
-            itemStacks.set(i, getStack(i));
+        if (shouldDeleteNBT(blockEntityTag)) {
+            itemStack.removeSubNbt("BlockEntityTag");
         }
-        Inventories.writeNbt(compoundTag, itemStacks);
+    }
+
+    public boolean shouldDeleteNBT(NbtCompound blockEntityTag) {
+        if (!blockEntityTag.contains("Items"))
+            return blockEntityTag.getKeys().size() == 0;
+        return isEmpty();
     }
 
     @Override
