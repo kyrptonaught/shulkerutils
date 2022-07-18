@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "shulkerutils",
-  "version": "1.0.4-1.18",
+  "version": "1.0.4-1.19",
   "name": "shulkerutils",
   "description": "Library for working with shulkers",
   "authors": [
